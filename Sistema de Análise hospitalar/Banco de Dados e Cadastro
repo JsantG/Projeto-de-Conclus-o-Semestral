@@ -1,0 +1,178 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_PACIENTES 100
+// CRUD - Create, Read, Update, Delete
+
+typedef struct {
+    int id;
+    char nome[50];
+    int idade;
+    char diagnostico[100];
+    float valorDiaria;
+    char status[20];
+} Paciente;
+
+Paciente pacientulus[MAX_PACIENTES];
+int qntP = 0;
+
+void carregar(){
+    FILE *fp = fopen("pacientes.txt", "r");
+    if(fp == NULL){
+        printf("Erro ao abrir o arquivo.\n");
+        return;
+    } 
+    while(fscanf(fp, "%d/%49[^;]/%d/%99[^;]/%f/%19[^\n]\n", 
+        &pacientulus[qntP].id, 
+        &pacientulus[qntP].nome, 
+        &pacientulus[qntP].idade, 
+        &pacientulus[qntP].diagnostico, 
+        &pacientulus[qntP].valorDiaria, 
+        &pacientulus[qntP].status) == 6){// Lê os dados do arquivo "pacientes.txt" e armazena na estrutura "pacientulus"
+        
+        qntP++;
+    }
+    fclose(fp);// Fecha o arquivo após a leitura
+}
+
+void salvar(){
+    FILE *fp = fopen("pacientes.txt", "w");
+    if(fp == NULL){
+        printf("Erro ao abrir o arquivo.\n");
+        return;
+    }
+    for(int i = 0; i < qntP; i++){
+        fprintf(fp, "%d/%s/%d/%s/%.2f/%s\n", 
+            pacientulus[i].id, 
+            pacientulus[i].nome, 
+            pacientulus[i].idade, 
+            pacientulus[i].diagnostico, 
+            pacientulus[i].valorDiaria, 
+            pacientulus[i].status);
+    }
+    fclose(fp);// Fecha o arquivo após a escrita
+}
+
+void cadastrar(){
+    carregar();
+
+    printf("Digite o ID do paciente:\n");
+    scanf("%d", &pacientulus[qntP].id);
+    getchar(); // Limpa o buffer do teclado para evitar problemas com a leitura da string
+
+    printf("Digite o nome do paciente:\n");
+    fgets(pacientulus[qntP].nome, 50, stdin); // Lê o nome do paciente, permitindo espaços e limitando a leitura a 49 caracteres
+    pacientulus[qntP].nome[strcspn(pacientulus[qntP].nome, "\n")] = '\0'; // Remove o caractere de nova linha adicionado pelo fgets
+    printf("Digite a idade do paciente:\n");
+    scanf("%d", &pacientulus[qntP].idade);
+    getchar(); // Limpa o buffer do teclado para evitar problemas com a leitura da string
+    
+    printf("Digite o diagnóstico do paciente:\n");
+    fgets(pacientulus[qntP].diagnostico, 100, stdin); // Lê o diagnóstico do paciente, permitindo espaços e limitando a leitura a 99 caracteres
+    pacientulus[qntP].diagnostico[strcspn(pacientulus[qntP].diagnostico, "\n")] = '\0'; // Remove o caractere de nova linha adicionado pelo fgets
+    printf("Digite o valor da diária do paciente:\n");
+    scanf("%f", &pacientulus[qntP].valorDiaria);
+    getchar(); // Limpa o buffer do teclado para evitar problemas com a leitura da string
+    
+    printf("Digite o status do paciente (Internado/Alta):\n");
+    fgets(pacientulus[qntP].status, 20, stdin); // Lê o status do paciente, permitindo espaços e limitando a leitura a 19 caracteres
+    pacientulus[qntP].status[strcspn(pacientulus[qntP].status, "\n")] = '\0'; // Remove o caractere de nova linha adicionado pelo fgets
+    
+    qntP++; // Incrementa a quantidade de pacientes cadastrados
+    salvar(); // Salva os dados atualizados no arquivo "pacientes.txt"
+}
+
+void update(){
+    carregar();
+    int id;
+    if(qntP == 0) {
+        printf("Nenhum paciente cadastrado para atualizar.\n");
+        return;
+    }
+    printf("Digite o ID do paciente que deseja atualizar:\n");
+    scanf("%d", &id);
+    getchar();
+    for(int i = 0; i < qntP; i++){
+        if(pacientulus[i].id == id){
+            printf("Digite o novo nome do paciente: \n");
+            fgets(pacientulus[i].nome, 50, stdin);
+            pacientulus[i].nome[strcspn(pacientulus[i].nome, "\n")] = '\0';
+            printf("Digite a nova idade do paciente: \n");
+            scanf("%d", &pacientulus[i].idade);
+            getchar();
+            printf("Digite o novo diagnóstico do paciente: \n");
+            fgets(pacientulus[i].diagnostico, 100, stdin);
+            pacientulus[i].diagnostico[strcspn(pacientulus[i].diagnostico, "\n")] = '\0';
+            printf("Digite o novo valor da diária do paciente: \n");
+            scanf("%f", &pacientulus[i].valorDiaria);
+            getchar();
+            printf("Digite o novo status do paciente (Internado/Alta): \n");
+            fgets(pacientulus[i].status, 20, stdin);
+            pacientulus[i].status[strcspn(pacientulus[i].status, "\n")] = '\0';
+            salvar();   
+        }
+        printf("Paciente com ID %d atualizado com sucesso.\n", id);
+        return;
+    }
+    printf("Paciente com ID %d não encontrado.\n", id);
+}
+
+
+void deletar(){
+    carregar();
+    int id;
+    if(qntP == 0) {
+        printf("Nenhum paciente cadastrado para deletar.\n");
+        return;
+    }
+    printf("Digite o ID do paciente que deseja deletar:\n");
+    scanf("%d", &id);
+    for(int i = 0; i < qntP; i++){
+        if(pacientulus[i].id == id){
+            for(int j = i; j < qntP - 1; j++){
+                pacientulus[j] = pacientulus[j + 1];
+            }
+            qntP--; // Decrementa a quantidade de pacientes cadastrados
+            salvar(); // Salva os dados atualizados no arquivo "pacientes.txt"
+            printf("Paciente com ID %d deletado com sucesso.\n", id);
+            return;
+        }
+    }
+    printf("Paciente com ID %d não encontrado.\n", id);
+}
+
+int main(){
+    int escolha;
+    int qntP=0;
+    do {
+        printf("Escolha uma opção:\n");
+        printf("1 - Cadastrar paciente\n");
+        printf("2 - Listar pacientes\n");
+        printf("3 - Atualizar paciente\n");
+        printf("4 - Deletar paciente\n");
+        printf("0 - Sair\n");
+        scanf("%d", &escolha);
+        switch(escolha) {
+            case 1:
+                cadastrar();
+                break;
+            case 2:
+                listar();
+                break;
+            case 3:
+                update();
+                break;
+            case 4:
+                deletar();
+                break;
+            case 0:
+                printf("Saindo...\n");
+                break;
+            default:
+                printf("Opção inválida. Tente novamente.\n");
+        }
+    } while(escolha != 0);
+    
+    return 0;
+}
