@@ -29,11 +29,11 @@ void carregar(){
         &pacientulus[qntP].idade, 
         &pacientulus[qntP].diagnostico, 
         &pacientulus[qntP].valorDiaria, 
-        &pacientulus[qntP].status) == 6){// Lê os dados do arquivo "pacientes.txt" e armazena na estrutura "pacientulus"
+        &pacientulus[qntP].status) == 6){
         
         qntP++;
     }
-    fclose(fp);// Fecha o arquivo após a leitura
+    fclose(fp);
 }
 
 void salvar(){
@@ -59,28 +59,28 @@ void cadastrar(){
 
     printf("Digite o ID do paciente:\n");
     scanf("%d", &pacientulus[qntP].id);
-    getchar(); // Limpa o buffer do teclado para evitar problemas com a leitura da string
+    getchar(); 
 
     printf("Digite o nome do paciente:\n");
-    fgets(pacientulus[qntP].nome, 50, stdin); // Lê o nome do paciente, permitindo espaços e limitando a leitura a 49 caracteres
-    pacientulus[qntP].nome[strcspn(pacientulus[qntP].nome, "\n")] = '\0'; // Remove o caractere de nova linha adicionado pelo fgets
+    fgets(pacientulus[qntP].nome, 50, stdin);
+    pacientulus[qntP].nome[strcspn(pacientulus[qntP].nome, "\n")] = '\0'; 
     printf("Digite a idade do paciente:\n");
     scanf("%d", &pacientulus[qntP].idade);
-    getchar(); // Limpa o buffer do teclado para evitar problemas com a leitura da string
+    getchar(); 
     
     printf("Digite o diagnóstico do paciente:\n");
-    fgets(pacientulus[qntP].diagnostico, 100, stdin); // Lê o diagnóstico do paciente, permitindo espaços e limitando a leitura a 99 caracteres
-    pacientulus[qntP].diagnostico[strcspn(pacientulus[qntP].diagnostico, "\n")] = '\0'; // Remove o caractere de nova linha adicionado pelo fgets
+    fgets(pacientulus[qntP].diagnostico, 100, stdin); 
+    pacientulus[qntP].diagnostico[strcspn(pacientulus[qntP].diagnostico, "\n")] = '\0'; 
     printf("Digite o valor da diária do paciente:\n");
     scanf("%f", &pacientulus[qntP].valorDiaria);
-    getchar(); // Limpa o buffer do teclado para evitar problemas com a leitura da string
+    getchar(); 
     
     printf("Digite o status do paciente (Internado/Alta):\n");
-    fgets(pacientulus[qntP].status, 20, stdin); // Lê o status do paciente, permitindo espaços e limitando a leitura a 19 caracteres
-    pacientulus[qntP].status[strcspn(pacientulus[qntP].status, "\n")] = '\0'; // Remove o caractere de nova linha adicionado pelo fgets
+    fgets(pacientulus[qntP].status, 20, stdin);
+    pacientulus[qntP].status[strcspn(pacientulus[qntP].status, "\n")] = '\0'; 
     
-    qntP++; // Incrementa a quantidade de pacientes cadastrados
-    salvar(); // Salva os dados atualizados no arquivo "pacientes.txt"
+    qntP++; 
+    salvar(); 
 }
 
 void update(){
@@ -133,8 +133,8 @@ void deletar(){
             for(int j = i; j < qntP - 1; j++){
                 pacientulus[j] = pacientulus[j + 1];
             }
-            qntP--; // Decrementa a quantidade de pacientes cadastrados
-            salvar(); // Salva os dados atualizados no arquivo "pacientes.txt"
+            qntP--; 
+            salvar(); 
             printf("Paciente com ID %d deletado com sucesso.\n", id);
             return;
         }
