@@ -1,4 +1,159 @@
 #include <stdio.h>
+
 #include <stdlib.h>
+
 #include <string.h>
 
+void atualizarProntuario(){
+    carregar();
+
+    int idProcurado;
+    int achou = 0;
+
+    printf("Informe o ID do paciente:\n");
+    scanf("%d", &idProcurado);
+    getchar();
+
+    for(int i = 0; i < qntP; i++){
+        if(pacientulus[i].id == idProcurado){
+            achou = 1;
+
+            printf("Digite o novo diagnostico:\n");
+            fgets(pacientulus[i].diagnostico, 100, stdin);
+            pacientulus[i].diagnostico[strcspn(pacientulus[i].diagnostico, "\n")] = '\0';
+
+            salvar();
+
+            printf("Prontuario atualizado com sucesso!\n");
+            break;
+        }
+    }
+
+    if(achou == 0){
+
+        printf("Paciente nao encontrado.\n");
+
+    }
+}
+
+void listarInternados(){
+    carregar();
+
+    int internados = 0;
+
+    for(int i = 0; i < qntP; i++){
+
+        if(strcmp(pacientulus[i].status, "Internado") == 0){
+            printf("\nID: %d\n", pacientulus[i].id);
+            printf("Nome: %s\n", pacientulus[i].nome);
+            printf("Idade: %d\n", pacientulus[i].idade);
+            printf("Diagnostico: %s\n", pacientulus[i].diagnostico);
+            printf("Valor da diaria: %.2f\n", pacientulus[i].valorDiaria);
+            printf("Status: %s\n", pacientulus[i].status);
+
+            internados++;
+        }
+    }
+
+    if(internados == 0){
+
+        printf("Nenhum paciente internado no momento.\n");
+
+    }
+}
+
+void darAlta(){
+    carregar();
+
+    int idProcurado;
+    int achou = 0;
+
+    printf("Informe o ID do paciente:\n");
+    scanf("%d", &idProcurado);
+    getchar();
+
+    for(int i = 0; i < qntP; i++){
+
+        if(pacientulus[i].id == idProcurado){
+            achou = 1;
+
+            for(int j = i; j < qntP - 1; j++){
+                pacientulus[j] = pacientulus[j + 1];
+            }
+
+            qntP--;
+
+            salvar();
+
+            printf("Paciente removido com sucesso!\n");
+            break;
+        }
+    }
+
+    if(achou == 0){
+        printf("ID nao encontrado.\n");
+    }
+}
+
+int main(){
+    int opcao;
+
+    do{
+        printf("\TSISTEMA DO HOSPITAL\n");
+        printf("tSelecione uma opcao:\n\n");
+
+        printf("1 - Cadastrar paciente\n");
+        printf("2 - Listar pacientes internados\n");
+        printf("3 - Buscar pacientes\n");
+        printf("4 - Filtrar pacientes\n");
+        printf("5 - Ordenar registros\n");
+        printf("6 - Atualizar prontuario\n");
+        printf("7 - Dar alta / remover paciente\n");
+        printf("0 - Sair\n");
+
+        printf("\nOpcao: ");
+        scanf("%d", &opcao);
+        getchar();
+
+        switch(opcao){
+            case 1:
+                cadastrar();
+                break;
+
+            case 2:
+                listarInternados();
+                break;
+
+            case 3:
+                printf("chamar funcao busca Thiago");
+                break;
+
+            case 4:
+                printf("chamar funcoao filtro Thiago");
+                break;
+
+            case 5:
+                printf("chamar Funcao ordenacao Francisco");
+                break;
+
+            case 6:
+                atualizarProntuario();
+                break;
+
+            case 7:
+                darAlta();
+                break;
+
+            case 0:
+                printf("Encerrando sistema...\n");
+                break;
+
+            default:
+                printf("Opcao invalida!\n");
+                break;
+        }
+
+    }while(opcao != 0);
+
+    return 0;
+}
