@@ -93,7 +93,7 @@ int main(){
     int opcao;
 
     do{
-        printf("\tSISTEMA DO HOSPITAL\n");
+        printf("\n\tSISTEMA DO HOSPITAL\n");
         printf("Selecione uma opcao:\n");
 
         printf("1 - Cadastrar paciente\n");
