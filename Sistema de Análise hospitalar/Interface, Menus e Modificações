@@ -125,15 +125,15 @@ int main(){
                 break;
 
             case 3:
-                printf("chamar funcao busca Thiago");
+                menuBusca();
                 break;
 
             case 4:
-                printf("chamar funcoao filtro Thiago");
+                menuFiltro();
                 break;
 
             case 5:
-                printf("chamar Funcao ordenacao Francisco");
+                menuOrdenacao();
                 break;
 
             case 6:
