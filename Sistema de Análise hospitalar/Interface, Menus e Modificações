@@ -1,9 +1,3 @@
-#include <stdio.h>
-
-#include <stdlib.h>
-
-#include <string.h>
-
 void atualizarProntuario(){
     carregar();
 
@@ -99,8 +93,8 @@ int main(){
     int opcao;
 
     do{
-        printf("\TSISTEMA DO HOSPITAL\n");
-        printf("tSelecione uma opcao:\n\n");
+        printf("\tSISTEMA DO HOSPITAL\n");
+        printf("Selecione uma opcao:\n");
 
         printf("1 - Cadastrar paciente\n");
         printf("2 - Listar pacientes internados\n");
