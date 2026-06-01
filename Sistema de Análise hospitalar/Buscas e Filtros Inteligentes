@@ -1,6 +1,3 @@
-#include <stdio.h>
-#include <string.h>
-
 void mostrarPaciente(Paciente p){
 
     printf("\n========================\n");
@@ -17,15 +14,13 @@ void buscarPorId(){
     carregar();
 
     int idBusca;
-    int i;
     int encontrou = 0;
 
     printf("\nDigite o ID do paciente: ");
     scanf("%d", &idBusca);
+    getchar();
 
-    i = 0;
-
-    while(i < qntP){
+    for(int i = 0; i < qntP; i++){
 
         if(pacientulus[i].id == idBusca){
 
@@ -34,43 +29,8 @@ void buscarPorId(){
             mostrarPaciente(pacientulus[i]);
 
             encontrou = 1;
+            break;
         }
-
-        i++;
-    }
-
-    if(encontrou == 0){
-
-        printf("\nPaciente nao encontrado.\n");
-    }
-}
-
-void buscarPorNome(){
-
-    carregar();
-
-    char nomeBusca[50];
-    int i;
-    int encontrou = 0;
-
-    printf("\nDigite o nome do paciente: ");
-    scanf(" %[^\n]", nomeBusca);
-
-    i = 0;
-
-    while(i < qntP){
-
-        if(strcmp(pacientulus[i].nome,
-                  nomeBusca) == 0){
-
-            printf("\nPACIENTE ENCONTRADO\n");
-
-            mostrarPaciente(pacientulus[i]);
-
-            encontrou = 1;
-        }
-
-        i++;
     }
 
     if(encontrou == 0){
@@ -85,18 +45,17 @@ void filtrarPorIdade(){
 
     int idadeMin;
     int idadeMax;
-    int i;
     int encontrou = 0;
 
     printf("\nDigite a idade minima: ");
     scanf("%d", &idadeMin);
+    getchar();
 
     printf("Digite a idade maxima: ");
     scanf("%d", &idadeMax);
+    getchar();
 
-    i = 0;
-
-    while(i < qntP){
+    for(int i = 0; i < qntP; i++){
 
         if(pacientulus[i].idade >= idadeMin &&
            pacientulus[i].idade <= idadeMax){
@@ -105,8 +64,6 @@ void filtrarPorIdade(){
 
             encontrou = 1;
         }
-
-        i++;
     }
 
     if(encontrou == 0){
@@ -115,62 +72,64 @@ void filtrarPorIdade(){
     }
 }
 
-void filtrarPorDiagnostico(){
+void menuBusca(){
 
-    carregar();
+    int opcao;
 
-    char diagnosticoBusca[100];
-    int i;
-    int encontrou = 0;
+    do{
 
-    printf("\nDigite o diagnostico: ");
-    scanf(" %[^\n]", diagnosticoBusca);
+        printf("\n===== MENU BUSCA =====\n");
+        printf("1 - Buscar por ID\n");
+        printf("0 - Voltar\n");
+        printf("Opcao: ");
 
-    i = 0;
+        scanf("%d", &opcao);
+        getchar();
 
-    while(i < qntP){
+        switch(opcao){
 
-        if(strcmp(pacientulus[i].diagnostico,
-                  diagnosticoBusca) == 0){
+            case 1:
+                buscarPorId();
+                break;
 
-            mostrarPaciente(pacientulus[i]);
+            case 0:
+                printf("\nVoltando...\n");
+                break;
 
-            encontrou = 1;
+            default:
+                printf("\nOpcao invalida!\n");
         }
 
-        i++;
-    }
-
-    if(encontrou == 0){
-
-        printf("\nNenhum paciente encontrado.\n");
-    }
+    }while(opcao != 0);
 }
 
-void filtrarInternados(){
+void menuFiltro(){
 
-    carregar();
+    int opcao;
 
-    int i;
-    int encontrou = 0;
+    do{
 
-    i = 0;
+        printf("\n===== MENU FILTRO =====\n");
+        printf("1 - Filtrar por idade\n");
+        printf("0 - Voltar\n");
+        printf("Opcao: ");
 
-    while(i < qntP){
+        scanf("%d", &opcao);
+        getchar();
 
-        if(strcmp(pacientulus[i].status,
-                  "Internado") == 0){
+        switch(opcao){
 
-            mostrarPaciente(pacientulus[i]);
+            case 1:
+                filtrarPorIdade();
+                break;
 
-            encontrou = 1;
+            case 0:
+                printf("\nVoltando...\n");
+                break;
+
+            default:
+                printf("\nOpcao invalida!\n");
         }
 
-        i++;
-    }
-
-    if(encontrou == 0){
-
-        printf("\nNenhum paciente internado.\n");
-    }
+    }while(opcao != 0);
 }
