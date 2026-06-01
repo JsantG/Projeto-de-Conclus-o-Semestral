@@ -83,42 +83,6 @@ void cadastrar(){
     salvar(); 
 }
 
-void update(){
-    carregar();
-    int id;
-    if(qntP == 0) {
-        printf("Nenhum paciente cadastrado para atualizar.\n");
-        return;
-    }
-    printf("Digite o ID do paciente que deseja atualizar:\n");
-    scanf("%d", &id);
-    getchar();
-    for(int i = 0; i < qntP; i++){
-        if(pacientulus[i].id == id){
-            printf("Digite o novo nome do paciente: \n");
-            fgets(pacientulus[i].nome, 50, stdin);
-            pacientulus[i].nome[strcspn(pacientulus[i].nome, "\n")] = '\0';
-            printf("Digite a nova idade do paciente: \n");
-            scanf("%d", &pacientulus[i].idade);
-            getchar();
-            printf("Digite o novo diagnóstico do paciente: \n");
-            fgets(pacientulus[i].diagnostico, 100, stdin);
-            pacientulus[i].diagnostico[strcspn(pacientulus[i].diagnostico, "\n")] = '\0';
-            printf("Digite o novo valor da diária do paciente: \n");
-            scanf("%f", &pacientulus[i].valorDiaria);
-            getchar();
-            printf("Digite o novo status do paciente (Internado/Alta): \n");
-            fgets(pacientulus[i].status, 20, stdin);
-            pacientulus[i].status[strcspn(pacientulus[i].status, "\n")] = '\0';
-            salvar();   
-        }
-        printf("Paciente com ID %d atualizado com sucesso.\n", id);
-        return;
-    }
-    printf("Paciente com ID %d não encontrado.\n", id);
-}
-
-
 void deletar(){
     carregar();
     int id;
