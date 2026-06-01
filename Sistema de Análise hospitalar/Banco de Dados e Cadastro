@@ -141,38 +141,3 @@ void deletar(){
     }
     printf("Paciente com ID %d não encontrado.\n", id);
 }
-
-int main(){
-    int escolha;
-    int qntP=0;
-    do {
-        printf("Escolha uma opção:\n");
-        printf("1 - Cadastrar paciente\n");
-        printf("2 - Listar pacientes\n");
-        printf("3 - Atualizar paciente\n");
-        printf("4 - Deletar paciente\n");
-        printf("0 - Sair\n");
-        scanf("%d", &escolha);
-        switch(escolha) {
-            case 1:
-                cadastrar();
-                break;
-            case 2:
-                listar();
-                break;
-            case 3:
-                update();
-                break;
-            case 4:
-                deletar();
-                break;
-            case 0:
-                printf("Saindo...\n");
-                break;
-            default:
-                printf("Opção inválida. Tente novamente.\n");
-        }
-    } while(escolha != 0);
-    
-    return 0;
-}
