@@ -1,1 +1,127 @@
+void ordenarPorID()
+{
+    carregar();
 
+    Paciente temp;
+
+    if(qntP == 0)
+    {
+        printf("\nNenhum paciente cadastrado para ordenar.\n");
+        return;
+    }
+
+    for(int i = 0; i < qntP - 1; i++)
+    {
+        for(int j = 0; j < qntP - i - 1; j++)
+        {
+            if(pacientulus[j].id > pacientulus[j + 1].id)
+            {
+                temp = pacientulus[j];
+                pacientulus[j] = pacientulus[j + 1];
+                pacientulus[j + 1] = temp;
+            }
+        }
+    }
+
+    salvar();
+    printf("\nPacientes ordenados por ID com sucesso!\n");
+}
+
+void ordenarPorIdade()
+{
+    carregar();
+
+    Paciente temp;
+
+    if(qntP == 0)
+    {
+        printf("\nNenhum paciente cadastrado para ordenar.\n");
+        return;
+    }
+
+    for(int i = 0; i < qntP - 1; i++)
+    {
+        for(int j = 0; j < qntP - i - 1; j++)
+        {
+            if(pacientulus[j].idade > pacientulus[j + 1].idade)
+            {
+                temp = pacientulus[j];
+                pacientulus[j] = pacientulus[j + 1];
+                pacientulus[j + 1] = temp;
+            }
+        }
+    }
+
+    salvar();
+    printf("\nPacientes ordenados por idade com sucesso!\n");
+}
+
+void ordenarPorNome()
+{
+    carregar();
+
+    Paciente temp;
+
+    if(qntP == 0)
+    {
+        printf("\nNenhum paciente cadastrado para ordenar.\n");
+        return;
+    }
+
+    for(int i = 0; i < qntP - 1; i++)
+    {
+        for(int j = 0; j < qntP - i - 1; j++)
+        {
+            if(strcmp(pacientulus[j].nome, pacientulus[j + 1].nome) > 0)
+            {
+                temp = pacientulus[j];
+                pacientulus[j] = pacientulus[j + 1];
+                pacientulus[j + 1] = temp;
+            }
+        }
+    }
+
+    salvar();
+    printf("\nPacientes ordenados por nome com sucesso!\n");
+}
+
+void menuOrdenacao()
+{
+    int opcao;
+
+    do
+    {
+        printf("\n===== MENU DE ORDENACAO =====\n");
+        printf("1 - Ordenar por ID crescente\n");
+        printf("2 - Ordenar por idade crescente\n");
+        printf("3 - Ordenar por nome (A-Z)\n");
+        printf("0 - Voltar\n");
+        printf("Opcao: ");
+
+        scanf("%d", &opcao);
+        getchar();
+
+        switch(opcao)
+        {
+            case 1:
+                ordenarPorID();
+                break;
+
+            case 2:
+                ordenarPorIdade();
+                break;
+
+            case 3:
+                ordenarPorNome();
+                break;
+
+            case 0:
+                printf("\nVoltando...\n");
+                break;
+
+            default:
+                printf("\nOpcao invalida!\n");
+        }
+
+    } while(opcao != 0);
+}
