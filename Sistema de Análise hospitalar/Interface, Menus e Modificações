@@ -24,9 +24,7 @@ void atualizarProntuario(){
     }
 
     if(achou == 0){
-
         printf("Paciente nao encontrado.\n");
-
     }
 }
 
@@ -50,9 +48,7 @@ void listarInternados(){
     }
 
     if(internados == 0){
-
         printf("Nenhum paciente internado no momento.\n");
-
     }
 }
 
@@ -71,15 +67,11 @@ void darAlta(){
         if(pacientulus[i].id == idProcurado){
             achou = 1;
 
-            for(int j = i; j < qntP - 1; j++){
-                pacientulus[j] = pacientulus[j + 1];
-            }
-
-            qntP--;
+            strcpy(pacientulus[i].status, "Alta");
 
             salvar();
 
-            printf("Paciente removido com sucesso!\n");
+            printf("Paciente recebeu alta com sucesso!\n");
             break;
         }
     }
@@ -94,7 +86,7 @@ int main(){
 
     do{
         printf("\n\tSISTEMA DO HOSPITAL\n");
-        printf("Selecione uma opcao:\n");
+        printf("Selecione uma opcao:");
 
         printf("1 - Cadastrar paciente\n");
         printf("2 - Listar pacientes internados\n");
@@ -102,7 +94,7 @@ int main(){
         printf("4 - Filtrar pacientes\n");
         printf("5 - Ordenar registros\n");
         printf("6 - Atualizar prontuario\n");
-        printf("7 - Dar alta / remover paciente\n");
+        printf("7 - Dar alta ao paciente\n");
         printf("0 - Sair\n");
 
         printf("\nOpcao: ");
