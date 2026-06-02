@@ -85,15 +85,42 @@ void cadastrar(){
 
     printf("Digite o ID do paciente:\n");
     scanf("%d",&pacientulus[qntP].id);
+    if((pacientulus[qntP].id <= 0)){ 
+        printf("ID invalido. Deve ser um numero positivo.\n");
+        return;
+    }
     getchar();
 
     printf("Digite o nome do paciente:\n");
     fgets(pacientulus[qntP].nome,50,stdin);
     pacientulus[qntP].nome[strcspn(
     pacientulus[qntP].nome,"\n")] = '\0';
-
+    if(strlen(pacientulus[qntP].nome)==0){
+        printf("Nome invalido. Nao pode ser vazio.\n");
+        return;
+    } else if(strlen(pacientulus[qntP].nome) > 50){
+        printf("Nome invalido. Deve ter no maximo 50 caracteres.\n");
+        return;
+    } else if(strspn(pacientulus[qntP].nome,"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz ") != strlen(pacientulus[qntP].nome)){
+        printf("Nome invalido. Deve conter apenas letras e espacos.\n");
+        return;
+    } else {
+        for(int i=0;i<qntP;i++){
+            if(strcmp(pacientulus[i].nome,pacientulus[qntP].nome)==0){
+                printf("Nome ja cadastrado. Nomes devem ser unicos.\n");
+                return;
+            }
+        }
+    }
     printf("Digite a idade do paciente:\n");
     scanf("%d",&pacientulus[qntP].idade);
+    if((pacientulus[qntP].idade <= 0)){ 
+        printf("Idade invalida. Deve ser um numero positivo.\n");
+        return;
+    } else if(pacientulus[qntP].idade > 120){
+        printf("Idade invalida. Deve ser menor ou igual a 120.\n");
+        return;
+    }
     getchar();
 
     printf("Digite o diagnostico do paciente:\n");
@@ -103,12 +130,21 @@ void cadastrar(){
 
     printf("Digite o valor da diaria:\n");
     scanf("%f",&pacientulus[qntP].valorDiaria);
+    if(pacientulus[qntP].valorDiaria < 0){ 
+        printf("Valor invalido. Deve ser um numero positivo.\n");
+        return;
+    }
     getchar();
 
     printf("Digite o status (Internado/Alta):\n");
     fgets(pacientulus[qntP].status,20,stdin);
-    pacientulus[qntP].status[strcspn(
+    pacientulus[qntP].status[strcspn(   
     pacientulus[qntP].status,"\n")] = '\0';
+    if(strcmp(pacientulus[qntP].status,"Internado")!=0 &&
+    strcmp(pacientulus[qntP].status,"Alta")!=0){
+        printf("Status invalido. Deve ser 'Internado' ou 'Alta'.\n");
+        return;
+    }
 
     qntP++;
 
@@ -496,7 +532,7 @@ int main(){
 
     do{
 
-        printf("\n\tSISTEMA DO HOSPITAL\n");
+        printf("\nSISTEMA DO HOSPITAL\n");
         printf("Selecione uma opcao:\n");
         printf("1 - Atualizar prontuario\n");
         printf("2 - Buscar pacientes internados\n");
@@ -507,8 +543,6 @@ int main(){
         printf("7 - Listar pacientes internados\n");
         printf("8 - Ordenar registros\n");
         printf("0 - Sair\n");
-        printf("Opcao: ");
-
         scanf("%d",&opcao);
         getchar();
 
@@ -557,566 +591,4 @@ int main(){
     }while(opcao!=0);
 
     return 0;
-}#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#define MAX_PACIENTES 100
-
-typedef struct{
-    int id;
-    char nome[50];
-    int idade;
-    char diagnostico[100];
-    float valorDiaria;
-    char status[20];
-}Paciente;
-
-Paciente pacientulus[MAX_PACIENTES];
-int qntP = 0;
-
-void carregar(){
-    qntP = 0;
-
-    FILE *fp = fopen("pacientes.txt","r");
-
-    if(fp == NULL){
-        return;
-    }
-
-    while(qntP < MAX_PACIENTES &&
-    fscanf(fp,"%d/%49[^/]/%d/%99[^/]/%f/%19[^\n]",
-    &pacientulus[qntP].id,
-    pacientulus[qntP].nome,
-    &pacientulus[qntP].idade,
-    pacientulus[qntP].diagnostico,
-    &pacientulus[qntP].valorDiaria,
-    pacientulus[qntP].status)==6){
-
-        qntP++;
-    }
-
-    fclose(fp);
 }
-
-void salvar(){
-
-    FILE *fp = fopen("pacientes.txt","w");
-
-    if(fp == NULL){
-        printf("Erro ao abrir arquivo.\n");
-        return;
-    }
-
-    for(int i=0;i<qntP;i++){
-
-        fprintf(fp,"%d/%s/%d/%s/%.2f/%s\n",
-        pacientulus[i].id,
-        pacientulus[i].nome,
-        pacientulus[i].idade,
-        pacientulus[i].diagnostico,
-        pacientulus[i].valorDiaria,
-        pacientulus[i].status);
-    }
-
-    fclose(fp);
-}
-
-void mostrarPaciente(int i){
-
-    printf("\n========================\n");
-    printf("ID: %d\n",pacientulus[i].id);
-    printf("Nome: %s\n",pacientulus[i].nome);
-    printf("Idade: %d\n",pacientulus[i].idade);
-    printf("Diagnostico: %s\n",pacientulus[i].diagnostico);
-    printf("Valor da diaria: %.2f\n",pacientulus[i].valorDiaria);
-    printf("Status: %s\n",pacientulus[i].status);
-}
-
-void cadastrar(){
-
-    carregar();
-
-    if(qntP >= MAX_PACIENTES){
-        printf("Limite de pacientes atingido.\n");
-        return;
-    }
-
-    printf("Digite o ID do paciente:\n");
-    scanf("%d",&pacientulus[qntP].id);
-    getchar();
-
-    printf("Digite o nome do paciente:\n");
-    fgets(pacientulus[qntP].nome,50,stdin);
-    pacientulus[qntP].nome[strcspn(
-    pacientulus[qntP].nome,"\n")] = '\0';
-
-    printf("Digite a idade do paciente:\n");
-    scanf("%d",&pacientulus[qntP].idade);
-    getchar();
-
-    printf("Digite o diagnostico do paciente:\n");
-    fgets(pacientulus[qntP].diagnostico,100,stdin);
-    pacientulus[qntP].diagnostico[strcspn(
-    pacientulus[qntP].diagnostico,"\n")] = '\0';
-
-    printf("Digite o valor da diaria:\n");
-    scanf("%f",&pacientulus[qntP].valorDiaria);
-    getchar();
-
-    printf("Digite o status (Internado/Alta):\n");
-    fgets(pacientulus[qntP].status,20,stdin);
-    pacientulus[qntP].status[strcspn(
-    pacientulus[qntP].status,"\n")] = '\0';
-
-    qntP++;
-
-    salvar();
-}
-
-void deletar(){
-
-    carregar();
-
-    int id;
-
-    if(qntP==0){
-        printf("Nenhum paciente cadastrado.\n");
-        return;
-    }
-
-    printf("Digite o ID do paciente:\n");
-    scanf("%d",&id);
-
-    for(int i=0;i<qntP;i++){
-
-        if(pacientulus[i].id==id){
-
-            for(int j=i;j<qntP-1;j++){
-                pacientulus[j]=pacientulus[j+1];
-            }
-
-            qntP--;
-
-            salvar();
-
-            printf("Paciente deletado.\n");
-
-            return;
-        }
-    }
-
-    printf("Paciente nao encontrado.\n");
-}
-
-void buscarPorId(){
-
-    carregar();
-
-    int idBusca;
-    int encontrou = 0;
-
-    printf("Digite o ID do paciente:\n");
-    scanf("%d",&idBusca);
-
-    for(int i=0;i<qntP;i++){
-
-        if(pacientulus[i].id==idBusca){
-
-            printf("\nPACIENTE ENCONTRADO\n");
-
-            mostrarPaciente(i);
-
-            encontrou = 1;
-
-            break;
-        }
-    }
-
-    if(!encontrou){
-        printf("Paciente nao encontrado.\n");
-    }
-}
-
-void filtrarPorIdade(){
-
-    carregar();
-
-    int idadeMin;
-    int idadeMax;
-    int encontrou = 0;
-
-    printf("Digite idade minima:\n");
-    scanf("%d",&idadeMin);
-
-    printf("Digite idade maxima:\n");
-    scanf("%d",&idadeMax);
-
-    for(int i=0;i<qntP;i++){
-
-        if(pacientulus[i].idade >= idadeMin &&
-        pacientulus[i].idade <= idadeMax){
-
-            mostrarPaciente(i);
-
-            encontrou = 1;
-        }
-    }
-
-    if(!encontrou){
-        printf("Nenhum paciente encontrado.\n");
-    }
-}
-
-void menuBusca(){
-
-    int opcao;
-
-    do{
-
-        printf("\n===== MENU BUSCA =====\n");
-        printf("1 - Buscar por ID\n");
-        printf("0 - Voltar\n");
-        printf("Opcao: ");
-
-        scanf("%d",&opcao);
-        getchar();
-
-        switch(opcao){
-
-            case 1:
-                buscarPorId();
-                break;
-
-            case 0:
-                break;
-
-            default:
-                printf("Opcao invalida.\n");
-        }
-
-    }while(opcao!=0);
-}
-
-void menuFiltro(){
-
-    int opcao;
-
-    do{
-
-        printf("\n===== MENU FILTRO =====\n");
-        printf("1 - Filtrar por idade\n");
-        printf("0 - Voltar\n");
-        printf("Opcao: ");
-
-        scanf("%d",&opcao);
-        getchar();
-
-        switch(opcao){
-
-            case 1:
-                filtrarPorIdade();
-                break;
-
-            case 0:
-                break;
-
-            default:
-                printf("Opcao invalida.\n");
-        }
-
-    }while(opcao!=0);
-}
-
-void atualizarProntuario(){
-
-    carregar();
-
-    int idProcurado;
-    int achou = 0;
-
-    printf("Informe o ID do paciente:\n");
-    scanf("%d",&idProcurado);
-    getchar();
-
-    for(int i=0;i<qntP;i++){
-
-        if(pacientulus[i].id==idProcurado){
-
-            achou = 1;
-
-            printf("Digite o novo diagnostico:\n");
-
-            fgets(pacientulus[i].diagnostico,100,stdin);
-
-            pacientulus[i].diagnostico[strcspn(
-            pacientulus[i].diagnostico,"\n")] = '\0';
-
-            salvar();
-
-            printf("Prontuario atualizado com sucesso!\n");
-
-            break;
-        }
-    }
-
-    if(!achou){
-        printf("Paciente nao encontrado.\n");
-    }
-}
-
-void listarInternados(){
-
-    carregar();
-
-    int internados = 0;
-
-    for(int i=0;i<qntP;i++){
-
-        if(strcmp(pacientulus[i].status,"Internado")==0){
-
-            mostrarPaciente(i);
-
-            internados++;
-        }
-    }
-
-    if(internados==0){
-        printf("Nenhum paciente internado.\n");
-    }
-}
-
-void darAlta(){
-
-    carregar();
-
-    int idProcurado;
-    int achou = 0;
-
-    printf("Informe o ID do paciente:\n");
-    scanf("%d",&idProcurado);
-
-    for(int i=0;i<qntP;i++){
-
-        if(pacientulus[i].id==idProcurado){
-
-            strcpy(pacientulus[i].status,"Alta");
-
-            salvar();
-
-            achou = 1;
-
-            printf("Paciente recebeu alta.\n");
-
-            break;
-        }
-    }
-
-    if(!achou){
-        printf("ID nao encontrado.\n");
-    }
-}
-
-void ordenarPorID(){
-
-    carregar();
-
-    Paciente temp;
-
-    if(qntP==0){
-        printf("Nenhum paciente cadastrado.\n");
-        return;
-    }
-
-    for(int i=0;i<qntP-1;i++){
-
-        for(int j=0;j<qntP-i-1;j++){
-
-            if(pacientulus[j].id >
-            pacientulus[j+1].id){
-
-                temp = pacientulus[j];
-                pacientulus[j] = pacientulus[j+1];
-                pacientulus[j+1] = temp;
-            }
-        }
-    }
-
-    salvar();
-
-    printf("Ordenado por ID.\n");
-}
-
-void ordenarPorIdade(){
-
-    carregar();
-
-    Paciente temp;
-
-    if(qntP==0){
-        printf("Nenhum paciente cadastrado.\n");
-        return;
-    }
-
-    for(int i=0;i<qntP-1;i++){
-
-        for(int j=0;j<qntP-i-1;j++){
-
-            if(pacientulus[j].idade >
-            pacientulus[j+1].idade){
-
-                temp = pacientulus[j];
-                pacientulus[j] = pacientulus[j+1];
-                pacientulus[j+1] = temp;
-            }
-        }
-    }
-
-    salvar();
-
-    printf("Ordenado por idade.\n");
-}
-
-void ordenarPorNome(){
-
-    carregar();
-
-    Paciente temp;
-
-    if(qntP==0){
-        printf("Nenhum paciente cadastrado.\n");
-        return;
-    }
-
-    for(int i=0;i<qntP-1;i++){
-
-        for(int j=0;j<qntP-i-1;j++){
-
-            if(strcmp(
-            pacientulus[j].nome,
-            pacientulus[j+1].nome)>0){
-
-                temp = pacientulus[j];
-                pacientulus[j] = pacientulus[j+1];
-                pacientulus[j+1] = temp;
-            }
-        }
-    }
-
-    salvar();
-
-    printf("Ordenado por nome.\n");
-}
-
-void menuOrdenacao(){
-
-    int opcao;
-
-    do{
-
-        printf("\n===== MENU ORDENACAO =====\n");
-        printf("1 - Ordenar por ID\n");
-        printf("2 - Ordenar por idade\n");
-        printf("3 - Ordenar por nome\n");
-        printf("0 - Voltar\n");
-        printf("Opcao: ");
-
-        scanf("%d",&opcao);
-        getchar();
-
-        switch(opcao){
-
-            case 1:
-                ordenarPorID();
-                break;
-
-            case 2:
-                ordenarPorIdade();
-                break;
-
-            case 3:
-                ordenarPorNome();
-                break;
-
-            case 0:
-                break;
-
-            default:
-                printf("Opcao invalida.\n");
-        }
-
-    }while(opcao!=0);
-}
-
-int main(){
-
-    int opcao;
-
-    do{
-
-        printf("\n\tSISTEMA DO HOSPITAL\n");
-        printf("Selecione uma opcao:\n");
-        printf("1 - Cadastrar paciente\n");
-        printf("2 - Listar pacientes internados\n");
-        printf("3 - Buscar pacientes\n");
-        printf("4 - Filtrar pacientes\n");
-        printf("5 - Ordenar registros\n");
-        printf("6 - Atualizar prontuario\n");
-        printf("7 - Dar alta ao paciente\n");
-        printf("8 - Deletar paciente\n");
-        printf("0 - Sair\n");
-        printf("Opcao: ");
-
-        scanf("%d",&opcao);
-        getchar();
-
-        switch(opcao){
-
-            case 1:
-                cadastrar();
-                break;
-
-            case 2:
-                listarInternados();
-                break;
-
-            case 3:
-                menuBusca();
-                break;
-
-            case 4:
-                menuFiltro();
-                break;
-
-            case 5:
-                menuOrdenacao();
-                break;
-
-            case 6:
-                atualizarProntuario();
-                break;
-
-            case 7:
-                darAlta();
-                break;
-
-            case 8:
-                deletar();
-                break;
-
-            case 0:
-                printf("Encerrando sistema...\n");
-                break;
-
-            default:
-                printf("Opcao invalida.\n");
-        }
-
-    }while(opcao!=0);
-
-    return 0;
-}
-
-
-    
-    
