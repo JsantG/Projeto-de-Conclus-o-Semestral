@@ -1,0 +1,100 @@
+// Pinos da ponte H (preencher em sala)
+int ENA = ;
+int IN1 = ;
+int IN2 = ;
+
+int ENB = ;
+int IN3 = ;
+int IN4 = ;
+
+// Velocidade dos motores (0 a 255)
+int velocidadeBaixa = 90;
+
+void setup() {
+
+  // Configuração dos pinos como saída
+  pinMode(ENA, OUTPUT);
+  pinMode(IN1, OUTPUT);
+  pinMode(IN2, OUTPUT);
+
+  pinMode(ENB, OUTPUT);
+  pinMode(IN3, OUTPUT);
+  pinMode(IN4, OUTPUT);
+
+  // Garante que os motores iniciem parados
+  pararMotores();
+
+  delay(2000);
+}
+
+void loop() {
+
+  // Testa motor esquerdo para frente
+  motorEsquerdoFrente();
+  delay(1500);
+
+  pararMotores();
+  delay(1000);
+
+  // Testa motor esquerdo para trás
+  motorEsquerdoTras();
+  delay(1500);
+
+  pararMotores();
+  delay(1000);
+
+  // Testa motor direito para frente
+  motorDireitoFrente();
+  delay(1500);
+
+  pararMotores();
+  delay(1000);
+
+  // Testa motor direito para trás
+  motorDireitoTras();
+  delay(1500);
+
+  pararMotores();
+  delay(2000);
+}
+
+// Faz o motor esquerdo girar para frente
+void motorEsquerdoFrente() {
+  analogWrite(ENA, velocidadeBaixa);
+  digitalWrite(IN1, HIGH);
+  digitalWrite(IN2, LOW);
+}
+
+// Faz o motor esquerdo girar para trás
+void motorEsquerdoTras() {
+  analogWrite(ENA, velocidadeBaixa);
+  digitalWrite(IN1, LOW);
+  digitalWrite(IN2, HIGH);
+}
+
+// Faz o motor direito girar para frente
+void motorDireitoFrente() {
+  analogWrite(ENB, velocidadeBaixa);
+  digitalWrite(IN3, HIGH);
+  digitalWrite(IN4, LOW);
+}
+
+// Faz o motor direito girar para trás
+void motorDireitoTras() {
+  analogWrite(ENB, velocidadeBaixa);
+  digitalWrite(IN3, LOW);
+  digitalWrite(IN4, HIGH);
+}
+
+// Desliga os dois motores
+void pararMotores() {
+
+  analogWrite(ENA, 0);
+  analogWrite(ENB, 0);
+
+  digitalWrite(IN1, LOW);
+  digitalWrite(IN2, LOW);
+
+  digitalWrite(IN3, LOW);
+  digitalWrite(IN4, LOW);
+}
