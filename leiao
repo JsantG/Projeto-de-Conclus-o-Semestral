@@ -1,0 +1,180 @@
+/**
+ * @file Projeto_Seguidor_Linha.ino
+ * @brief Código-fonte do Robô Seguidor de Linha Autônomo
+ * @details Projeto Integrador - Lógica de Programação e Eletroeletrônica
+ * * ATENÇÃO: Os pinos devem ser definidos conforme a montagem física do grupo.
+ */
+
+// ============================================================================
+// 1. DEFINIÇÃO DE PINOS (Hardware Mappings)
+// ============================================================================
+
+// Pinos dos Sensores Infravermelhos (Digitais ou Analógicos usados como Digital)
+const int pinSensorEsquerdo = 2; 
+const int pinSensorCentral  = 3; 
+const int pinSensorDireito  = 4; 
+
+// Pinos de Controle do Motor Esquerdo (Ponte H L298N)
+const int pinENA = 5;  // PWM - Controle de velocidade
+const int pinIN1 = 6;  // Sentido horário
+const int pinIN2 = 7;  // Sentido anti-horário
+
+// Pinos de Controle do Motor Direito (Ponte H L298N)
+const int pinIN3 = 8;  // Sentido horário
+const int pinIN4 = 9;  // Sentido anti-horário
+const int pinENB = 10; // PWM - Controle de velocidade
+
+// ============================================================================
+// 2. CONFIGURAÇÕES DE CALIBRAÇÃO (Constantes e Variáveis)
+// ============================================================================
+
+// Velocidades de operação dos motores (Valores de 0 a 255)
+const int VELOCIDADE_CRUZEIRO = 110; // Velocidade em linha reta
+const int VELOCIDADE_CURVA    = 130; // Força extra para vencer o atrito nas curvas
+
+// Definição dos estados de leitura dos sensores (Lógica Física)
+// Ajustar conforme a pista: Se a linha for PRETA e o fundo BRANCO:
+// Geralmente, sensor na linha preta = HIGH (1), no fundo branco = LOW (0)
+const int LINHA  = HIGH;
+const int FUNDO  = LOW;
+
+// ============================================================================
+// 3. FUNÇÃO CONFIGURAÇÃO (setup)
+// ============================================================================
+void setup() {
+  // Configuração dos pinos dos sensores como entrada
+  pinMode(pinSensorEsquerdo, INPUT);
+  pinMode(pinSensorCentral,  INPUT);
+  pinMode(pinSensorDireito,  INPUT);
+
+  // Configuração os pinos da Ponte H como saída
+  pinMode(pinENA, OUTPUT);
+  pinMode(pinIN1, OUTPUT);
+  pinMode(pinIN2, OUTPUT);
+  pinMode(pinENB, OUTPUT);
+  pinMode(pinIN3, OUTPUT);
+  pinMode(pinIN4, OUTPUT);
+
+  // Inicializa o Monitor Serial para depuração em bancada
+  Serial.begin(9600);
+  Serial.println("--- Robô Inicializado: Aguardando Inicialização ---");
+
+  // Segurança: Garante que os motores iniciem completamente parados
+  pararMotores();
+  delay(2000); // Delay de 2 segundos para dar tempo de colocar o robô na pista
+}
+
+// ============================================================================
+// 4. LOOP PRINCIPAL (Lógica de Controle Autônomo)
+// ============================================================================
+void loop() {
+  // Chamada da função modular que processa a leitura dos sensores e decide o movimento
+  processarTrajetoria();
+}
+
+// ============================================================================
+// 5. FUNÇÕES MODULARIZADAS DO SISTEMA
+// ============================================================================
+
+/**
+ * @brief Lê os sensores e executa a tomada de decisão estruturada por condicionais.
+ */
+void processarTrajetoria() {
+  // Realiza a leitura digital em tempo real de cada sensor
+  int esquerdo = digitalRead(pinSensorEsquerdo);
+  int central  = digitalRead(pinSensorCentral);
+  int direito  = digitalRead(pinSensorDireito);
+
+  // Imprime os estados no Monitor Serial (útil para testes em bancada)
+  exibirLeiturasSerial(esquerdo, central, direito);
+
+  // --- ESTRUTURA CONDICIONAL DE TOMADA DE DECISÃO ---
+  
+  // Condição 1: Apenas o sensor central está na linha -> Seguir em Frente
+  if (esquerdo == FUNDO && central == LINHA && direito == FUNDO) {
+    moverFrente(VELOCIDADE_CRUZEIRO);
+  }
+  // Condição 2: Sensor Esquerdo detectou a linha -> Corrigir para a Esquerda
+  else if (esquerdo == LINHA && direito == FUNDO) {
+    virarEsquerda(VELOCIDADE_CURVA);
+  }
+  // Condição 3: Sensor Direito detectou a linha -> Corrigir para a Direita
+  else if (direito == LINHA && esquerdo == FUNDO) {
+    virarDireita(VELOCIDADE_CURVA);
+  }
+  // Condição 4: Cruzamento ou perda de linha (todos na linha ou todos fora)
+  // Mantém o movimento de frente cauteloso ou para por segurança
+  else if (esquerdo == FUNDO && central == FUNDO && direito == FUNDO) {
+    // Perdeu a linha: Estrutura de repetição curta para tentar achar a pista antes de parar
+    pararMotores(); 
+  }
+}
+
+/**
+ * @brief Aciona ambos os motores para deslocamento retilíneo.
+ */
+void moverFrente(int velocidade) {
+  analogWrite(pinENA, velocidade);
+  analogWrite(pinENB, velocidade);
+  
+  digitalWrite(pinIN1, HIGH);
+  digitalWrite(pinIN2, LOW);
+  digitalWrite(pinIN3, HIGH);
+  digitalWrite(pinIN4, LOW);
+}
+
+/**
+ * @brief Executa curva para a esquerda girando o motor direito para frente 
+ * e travando (ou revertendo) o motor esquerdo.
+ */
+void virarEsquerda(int velocidade) {
+  analogWrite(pinENA, velocidade);
+  analogWrite(pinENB, velocidade);
+  
+  // Motor Esquerdo vai para trás para fazer o eixo girar mais rápido
+  digitalWrite(pinIN1, LOW);
+  digitalWrite(pinIN2, HIGH);
+  
+  // Motor Direito vai para frente
+  digitalWrite(pinIN3, HIGH);
+  digitalWrite(pinIN4, LOW);
+}
+
+/**
+ * @brief Executa curva para a direita girando o motor esquerdo para frente 
+ * e travando (ou revertendo) o motor direito.
+ */
+void virarDireita(int velocidade) {
+  analogWrite(pinENA, velocidade);
+  analogWrite(pinENB, velocidade);
+  
+  // Motor Esquerdo vai para frente
+  digitalWrite(pinIN1, HIGH);
+  digitalWrite(pinIN2, LOW);
+  
+  // Motor Direito vai para trás
+  digitalWrite(pinIN3, LOW);
+  digitalWrite(pinIN4, HIGH);
+}
+
+/**
+ * @brief Interrompe o sinal elétrico de potência enviado aos motores.
+ */
+void pararMotores() {
+  analogWrite(pinENA, 0);
+  analogWrite(pinENB, 0);
+  
+  digitalWrite(pinIN1, LOW);
+  digitalWrite(pinIN2, LOW);
+  digitalWrite(pinIN3, LOW);
+  digitalWrite(pinIN4, LOW);
+}
+
+/**
+ * @brief Função auxiliar para enviar logs de dados via comunicação Serial.
+ */
+void exibirLeiturasSerial(int esq, int cen, int dir) {
+  Serial.print("Esq: "); Serial.print(esq);
+  Serial.print(" | Cen: "); Serial.print(cen);
+  Serial.print(" | Dir: "); Serial.println(dir);
+}
